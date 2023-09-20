@@ -22,12 +22,19 @@ public class RequestController {
 	
 	@Autowired
 	private RequestRepository requestRepo;
+
+	// GET REVIEWS
+	@GetMapping("/reviews/{userId}")
+	public ResponseEntity<Iterable<Request>> getReviews(@PathVariable int userId) {
+		Iterable<Request> requests = requestRepo.findRequestByStatusAndUserIdNot("REVIEW", userId);
+		return new ResponseEntity<Iterable<Request>>(requests, HttpStatus.OK);
+	}
 	
 	// GET ALL
 	@GetMapping
 	public ResponseEntity<Iterable<Request>> getRequests() {
-		Iterable<Request> cust = requestRepo.findAll();
-		return new ResponseEntity<>(cust, HttpStatus.OK);
+		Iterable<Request> request = requestRepo.findAll();
+		return new ResponseEntity<>(request, HttpStatus.OK);
 	}
 	
 	// GET BY ID
@@ -36,43 +43,86 @@ public class RequestController {
 		if(id <= 0) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		Optional<Request> cust = requestRepo.findById(id);
-		if(cust.isEmpty()) {
+		Optional<Request> request = requestRepo.findById(id);
+		if(request.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<Request>(cust.get(), HttpStatus.OK);
+		return new ResponseEntity<Request>(request.get(), HttpStatus.OK);
 	}
 	
 	// POST 
 	@PostMapping
-	public ResponseEntity<Request> postRequest(@RequestBody Request cust) {
-		if(cust.getId() != 0) {
+	public ResponseEntity<Request> postRequest(@RequestBody Request request) {
+		if(request.getId() != 0) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		requestRepo.save(cust);
-		return new ResponseEntity<Request>(cust, HttpStatus.CREATED);
+		requestRepo.save(request);
+		return new ResponseEntity<Request>(request, HttpStatus.CREATED);
 	}
 	
 	// PUT
 	@SuppressWarnings("rawtypes")
 	@PutMapping("{id}")
-	public ResponseEntity putRequest(@RequestBody Request cust) {
-		if(cust.getId() <= 0) {
+	public ResponseEntity putRequest(@RequestBody Request request) {
+		if(request.getId() <= 0) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		requestRepo.save(cust);
+		requestRepo.save(request);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
-	// DELETE
-		@SuppressWarnings("rawtypes")
-		@DeleteMapping("{id}")
-		public ResponseEntity DeleteRequest(@PathVariable int id) {
-			if(id <= 0) {
-				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			}
-			requestRepo.deleteById(id);
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	// PUT REVIEW
+	@SuppressWarnings("rawtypes")
+	@PutMapping("/review/{id}")
+	public ResponseEntity review(@PathVariable int id) {
+		if(id <= 0) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
+		Request request = requestRepo.findRequestById(id);
+		if(request.getTotal() <= 50 ) {
+			request.setStatus("APPROVED");
+		} else {			
+			request.setStatus("REVIEW");
+		}
+		requestRepo.save(request);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	// PUT APPROVE
+	@SuppressWarnings("rawtypes")
+	@PutMapping("/approve/{id}")
+	public ResponseEntity approve(@PathVariable int id) {
+		if(id <= 0) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		Request request = requestRepo.findRequestById(id);
+		request.setStatus("APPROVED");
+		requestRepo.save(request);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	// PUT REJECT
+	@SuppressWarnings("rawtypes")
+	@PutMapping("/reject/{id}")
+	public ResponseEntity reject(@PathVariable int id) {
+		if(id <= 0) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		Request request = requestRepo.findRequestById(id);
+		request.setStatus("REJECTED");
+		requestRepo.save(request);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	// DELETE
+	@SuppressWarnings("rawtypes")
+	@DeleteMapping("{id}")
+	public ResponseEntity DeleteRequest(@PathVariable int id) {
+		if(id <= 0) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		requestRepo.deleteById(id);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
 
 }

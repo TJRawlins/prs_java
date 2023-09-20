@@ -3,6 +3,7 @@ package com.prs.spring.request;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.prs.spring.requestlines.RequestLine;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -22,14 +23,20 @@ public class Request {
 	@Column(length=20, nullable=false)
 	private String deliveryMode = "Pickup";
 	@Column(length=10, nullable=false)
-	private String Status = "NEW";
+	private String status = "NEW";
 	@Column(columnDefinition="decimal(11,2) not null")
 	private double total = 0;
+	@SuppressWarnings("unused")
+	private int userId;
 	
-	// FOREIGN KEY
+	// FOREIGN KEYS
 	@JsonManagedReference
 	@OneToMany(mappedBy="request")
 	private List<RequestLine> requestlines;
+	
+//	@ManyToOne(optional=false)
+//	@JoinColumn(name="userId")
+//	private User user;
 
 	// GETTERS & SETTERS
 	public int getId() {
@@ -73,19 +80,27 @@ public class Request {
 	}
 
 	public String getStatus() {
-		return Status;
+		return status;
 	}
 
 	public void setStatus(String status) {
-		Status = status;
+		this.status = status;
 	}
 
 	public double getTotal() {
 		return total;
 	}
 
-	public void setTotal(double total) {
-		this.total = total;
+	public void setTotal(int userId) {
+		this.userId = userId;
+	}
+	
+	public double getUserId() {
+		return total;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 	public List<RequestLine> getRequestlines() {
