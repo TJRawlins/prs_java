@@ -23,7 +23,14 @@ public class UserController {
 	private UserRepository userRepo;
 	
 	// GET LOGIN
-
+	@GetMapping("{username}/{password}")
+	public ResponseEntity<User> login(@PathVariable String username, @PathVariable String password) {
+		Optional<User> user = userRepo.findUserByUsernameAndPassword(username, password);
+		if(user.isEmpty()) {
+			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<User>(user.get(), HttpStatus.OK);
+	}
 	
 	// GET ALL
 	@GetMapping
