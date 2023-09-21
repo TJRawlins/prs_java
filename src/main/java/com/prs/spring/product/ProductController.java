@@ -26,8 +26,8 @@ public class ProductController {
 	// GET ALL
 	@GetMapping
 	public ResponseEntity<Iterable<Product>> getProducts() {
-		Iterable<Product> cust = prodRepo.findAll();
-		return new ResponseEntity<>(cust, HttpStatus.OK);
+		Iterable<Product> prod = prodRepo.findAll();
+		return new ResponseEntity<>(prod, HttpStatus.OK);
 	}
 	
 	// GET BY ID
@@ -36,31 +36,31 @@ public class ProductController {
 		if(id <= 0) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		Optional<Product> cust = prodRepo.findById(id);
-		if(cust.isEmpty()) {
+		Optional<Product> prod = prodRepo.findById(id);
+		if(prod.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<Product>(cust.get(), HttpStatus.OK);
+		return new ResponseEntity<Product>(prod.get(), HttpStatus.OK);
 	}
 	
 	// POST
 	@PostMapping
-	public ResponseEntity<Product> postProduct(@RequestBody Product cust) {
-		if(cust.getId() != 0) {
+	public ResponseEntity<Product> postProduct(@RequestBody Product prod) {
+		if(prod.getId() != 0) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		prodRepo.save(cust);
-		return new ResponseEntity<Product>(cust, HttpStatus.CREATED);
+		prodRepo.save(prod);
+		return new ResponseEntity<Product>(prod, HttpStatus.CREATED);
 	}
 	
 	// PUT
 	@SuppressWarnings("rawtypes")
 	@PutMapping("{id}")
-	public ResponseEntity putProduct(@RequestBody Product cust) {
-		if(cust.getId() <= 0) {
+	public ResponseEntity putProduct(@RequestBody Product prod) {
+		if(prod.getId() <= 0) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		prodRepo.save(cust);
+		prodRepo.save(prod);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	

@@ -3,6 +3,7 @@ package com.prs.spring.request;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.prs.spring.requestlines.RequestLine;
+import com.prs.spring.user.User;
 
 import jakarta.persistence.*;
 
@@ -26,17 +27,16 @@ public class Request {
 	private String status = "NEW";
 	@Column(columnDefinition="decimal(11,2) not null")
 	private double total = 0;
-	@SuppressWarnings("unused")
-	private int userId;
 	
 	// FOREIGN KEYS
 	@JsonManagedReference
 	@OneToMany(mappedBy="request")
+//	@JoinColumn(name="requestId")
 	private List<RequestLine> requestlines;
 	
-//	@ManyToOne(optional=false)
-//	@JoinColumn(name="userId")
-//	private User user;
+	@ManyToOne(optional=false)
+	@JoinColumn(name="userId")
+	private User user;
 
 	// GETTERS & SETTERS
 	public int getId() {
@@ -91,17 +91,6 @@ public class Request {
 		return total;
 	}
 
-	public void setTotal(int userId) {
-		this.userId = userId;
-	}
-	
-	public double getUserId() {
-		return total;
-	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
 
 	public List<RequestLine> getRequestlines() {
 		return requestlines;
@@ -109,6 +98,18 @@ public class Request {
 
 	public void setRequestlines(List<RequestLine> requestlines) {
 		this.requestlines = requestlines;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public void setTotal(double total) {
+		this.total = total;
 	}
 	
 	

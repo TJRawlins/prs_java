@@ -43,6 +43,7 @@ public class RequestController {
 		if(id <= 0) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
+		// JOIN USERS, REQUESTLINES AND PRODUCSTS - JOINED IN REQUEST CLASS @MANYTOONE
 		Optional<Request> request = requestRepo.findById(id);
 		if(request.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
