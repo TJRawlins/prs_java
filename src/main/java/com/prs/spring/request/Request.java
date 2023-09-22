@@ -31,7 +31,6 @@ public class Request {
 	// FOREIGN KEYS
 	@JsonManagedReference
 	@OneToMany(mappedBy="request")
-//	@JoinColumn(name="requestId")
 	private List<RequestLine> requestlines;
 	
 	@ManyToOne(optional=false)
@@ -91,6 +90,10 @@ public class Request {
 		return total;
 	}
 
+	public void setTotal(double total) {
+		this.total = total;
+	}
+	
 
 	public List<RequestLine> getRequestlines() {
 		return requestlines;
@@ -108,10 +111,6 @@ public class Request {
 		this.user = user;
 	}
 
-	public void setTotal(double total) {
-		this.total = total;
-	}
-	
 	
 	
 }

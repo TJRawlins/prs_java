@@ -16,7 +16,7 @@ public class Product {
 	private String partNbr = "";
 	@Column(length=30, nullable=false)
 	private String name = "";
-	@Column(columnDefinition="decimal(11,2)")
+	@Column(columnDefinition="decimal(11,2) not null")
 	private double price;
 	@Column(length=30, nullable=false)
 	private String unit = "";
@@ -26,7 +26,8 @@ public class Product {
 	// FOREIGN KEY
 	@ManyToOne(optional=false)
 	@JoinColumn(name="vendorId")
-	private Vendor vendors;
+	private Vendor vendor;
+
 
 	// GETTERS & SETTERS
 	public int getId() {
@@ -77,12 +78,12 @@ public class Product {
 		this.photoPath = photoPath;
 	}
 
-	public Vendor getVendors() {
-		return vendors;
+	public Vendor getVendor() {
+		return vendor;
 	}
 
-	public void setVendors(Vendor vendors) {
-		this.vendors = vendors;
+	public void setVendor(Vendor vendors) {
+		this.vendor = vendors;
 	}
 	
 }

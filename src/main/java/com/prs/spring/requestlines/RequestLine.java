@@ -1,7 +1,10 @@
 package com.prs.spring.requestlines;
 
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.prs.spring.product.Product;
 import com.prs.spring.request.Request;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -12,13 +15,19 @@ public class RequestLine {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	@Column(nullable=false)
 	private int quantity = 1;
 		
-	// FOREIGN KEY
+	// FOREIGN KEYS
+	@ManyToOne(optional=false)
+	@JoinColumn(name="productId")
+	private Product product;
+	
 	@JsonBackReference
 	@ManyToOne(optional=false)
 	@JoinColumn(name="requestId")
 	private Request request;
+	
 
 	// GETTERS & SETTERS
 	public int getId() {
@@ -44,6 +53,15 @@ public class RequestLine {
 	public void setRequest(Request request) {
 		this.request = request;
 	}
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
 		
 
 }
