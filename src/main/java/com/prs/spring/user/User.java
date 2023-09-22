@@ -23,7 +23,7 @@ public class User {
 	@Column(length=255, nullable=true)
 	private String email;
 	@Column(columnDefinition="bit not null")
-	private boolean isReviewr;
+	private boolean isReviewer;
 	@Column(columnDefinition="bit not null")
 	private boolean isAdmin;
 	
@@ -70,16 +70,16 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public boolean getReviewr() {
-		return isReviewr;
+	public boolean getIsReviewer() {
+		return isReviewer;
 	}
-	public void setReviewr(boolean isReviewr) {
-		this.isReviewr = isReviewr;
+	public void setIsReviewer(boolean isReviewr) {
+		this.isReviewer = isReviewr;
 	}
-	public boolean getAdmin() {
+	public boolean getIsAdmin() {
 		return isAdmin;
 	}
-	public void setAdmin(boolean isAdmin) {
+	public void setIsAdmin(boolean isAdmin) {
 		this.isAdmin = isAdmin;
 	}
 	
