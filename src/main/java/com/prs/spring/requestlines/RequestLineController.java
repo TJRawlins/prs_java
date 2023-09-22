@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.prs.spring.request.Request;
+import com.prs.spring.request.RequestRepository;
+
 
 @CrossOrigin
 @RestController
@@ -24,17 +27,31 @@ public class RequestLineController {
 	@Autowired
 	private RequestLineRepository rlRepo;
 	
+	@Autowired
+	private RequestRepository reqRepo;
+	
 	// RECALCULATE TOTAL
-//	private void recalculateRequestTotal(int requestId) {
-//		Request request = rlRepo.findRequestById(requestId);
-//		double total;
-//		request.setTotal(total);
-		
-		// Need requestLine.Quantity
-		
-		// Need product.Price
-		// Total = Sum(requestLine.Quantity * product.Price)
-//	}
+	private void recalculateRequestTotal(int requestId) {
+		double total = 0;
+		Request request = reqRepo.findRequestById(requestId);
+		Iterable<RequestLine> requestlines = rlRepo.findAllRequestlineByRequestId(requestId);
+		// loop through requestlines
+		for (RequestLine rl : requestlines ) {
+			total += rl.getQuantity() * rl.getProduct().getPrice();
+		}
+		/*
+		 * CANNOT UPDATE TOTAL USING FOREACH
+		requestlines.forEach(rl -> {
+			// get requestLine.Quantity
+			// get product.Price
+			// Total = requestLine.Quantity * product.Price
+			total += rl.getQuantity() * rl.getProduct().getPrice();
+			});
+		*/
+		request.setTotal(total);
+		reqRepo.save(request);
+	}
+
 	
 	// GET ALL
 	@GetMapping
@@ -63,6 +80,7 @@ public class RequestLineController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		rlRepo.save(requestline);
+		recalculateRequestTotal(requestline.getRequest().getId());
 		return new ResponseEntity<RequestLine>(requestline, HttpStatus.CREATED);
 	}
 	
@@ -74,6 +92,7 @@ public class RequestLineController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		rlRepo.save(requestline);
+		recalculateRequestTotal(requestline.getRequest().getId());
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
@@ -84,7 +103,9 @@ public class RequestLineController {
 			if(id <= 0) {
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
+			int requestId = rlRepo.findById(id).get().getRequest().getId();
 			rlRepo.deleteById(id);
+			recalculateRequestTotal(requestId);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 
